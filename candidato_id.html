@@ -1,0 +1,45 @@
+{% extends "template.html" %}
+{% block conteudo %}
+<style>
+    .btn-blue {
+        background-color: rgb(235, 243, 205); 
+        color: white; 
+        display: block; 
+        width: 150px; 
+        margin: auto; 
+    }
+</style>    
+<h1>Votação</h1>
+<form id="votingForm" method="POST">
+    {{ form.csrf_token }}
+    <div class="candidato">
+        <label>Digite o número do candidato:</label>
+        <input type="checkbox" name="candidato_id" min="1" max="99">
+    </div>
+    <button type="button" style="background-color: rgb(175, 233, 175);" onclick="playSoundAndConfirm()">Confirmar</button>
+    <button type="reset" style="background-color: rgb(236, 194, 194);">Corrigir</button>
+    <a href="{{ url_for('index') }}" class="btn btn-default btn-blue">Voltar</a> 
+</form>
+
+<script>
+    function playSoundAndConfirm() {
+        var confirmation = confirm("Confirmar seu voto?");
+        if (confirmation) {
+            var sound = document.getElementById("mySoundClip");
+            sound.onended = function() {
+                document.getElementById("votingForm").submit();
+            };
+            sound.play();
+        }
+    }
+</script>
+<div>
+    <h2>Candidatos</h2>
+    {% for candidato in candidatos %}
+        <div>
+            <img src="{{ url_for('imagem', nomeArquivo=candidato.imagem) }}" alt="{{ candidato.nome }}">
+            <p>Número: {{ candidato.id }} - {{ candidato.nome }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
